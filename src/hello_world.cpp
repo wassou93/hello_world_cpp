@@ -3,12 +3,19 @@
 #include <algorithm>
 
 static void concat_vecs(std::vector<int>& v, std::vector<int>& newElems) {
-	const auto oldSize = v.size();
-	v.insert(
-		v.cend(),
-		std::move_iterator(newElems.begin()),
-		std::move_iterator(newElems.end())
-	);
+	//const auto oldSize = v.size();
+	for (int i = 0; i < 100; ++i) {
+		v.insert(
+			v.cend(),
+			std::move_iterator(newElems.begin()),
+			std::move_iterator(newElems.end())
+		);
+
+		std::cout << v.capacity() << " ";
+	}
+
+	std::cout << std::endl;
+
 	//v.resize(v.size() + newElems.size());
 	// and
 	//std::copy(
@@ -24,7 +31,7 @@ static void concat_vecs(std::vector<int>& v, std::vector<int>& newElems) {
 	//	[](auto&& elem) { return elem * 2; }
 	//);
 }
- 
+
 int main()
 {
 	std::vector<int> list = { 1, 2, 3 };
