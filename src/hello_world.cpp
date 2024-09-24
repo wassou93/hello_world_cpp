@@ -2,14 +2,14 @@
 
 class Animal {
 public:
-    void speak() {
+    virtual void speak() {
         std::cout << "Animal sound" << std::endl;
     }
 };
 
 class Dog : public Animal {
 public:
-    void speak() {
+    void speak() override {
         std::cout << "Bark" << std::endl;
     }
 };
