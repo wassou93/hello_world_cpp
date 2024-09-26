@@ -4,72 +4,48 @@
 
 using namespace std;
 
+class trie {
+public:
+    int x;
+    trie* v[26];
+};
+void maketrie(string str, trie* node) {
+    for (auto& i : str) {
+        if (node->v[i - 'a'] == NULL) {
+            node->v[i - 'a'] = new trie();
+            node = node->v[i - 'a'];
+            node->x = node->x + 1;
+        }
+        else {
+            node = node->v[i - 'a'];
+            node->x = node->x + 1;
+        }
+    }
+}
+void solve(string str, trie* node, int& x) {
+    trie* p = node;
+    for (auto& i : str) {
+        p = p->v[i - 'a'];
+        x += p->x;
+    }
+}
 class Solution {
 public:
-    std::vector<int> sumPrefixScores(std::vector<std::string>& words) {
-        int wordCount = words.size();
-        std::vector<int> sortedIndices(wordCount);
-        for (int i = 0; i < wordCount; i++) {
-            sortedIndices[i] = i;
+    vector<int> sumPrefixScores(vector<string>& words) {
+        trie* node = new trie();
+        for (auto& i : words) {
+            maketrie(i, node);
         }
-        std::sort(sortedIndices.begin(), sortedIndices.end(),
-            [&words](int a, int b) { return words[a] < words[b]; });
-
-        std::vector<int> commonPrefixLengths = calculateCommonPrefixLengths(words, sortedIndices);
-        std::vector<int> scores = calculateScores(words, sortedIndices, commonPrefixLengths);
-        return scores;
-    }
-
-private:
-    std::vector<int> calculateCommonPrefixLengths(const std::vector<std::string>& words, const std::vector<int>& sortedIndices) {
-        std::vector<int> commonPrefixLengths(words.size(), 0);
-        for (int i = 1; i < words.size(); i++) {
-            const std::string& prevWord = words[sortedIndices[i - 1]];
-            const std::string& currWord = words[sortedIndices[i]];
-            int commonLength = 0;
-            while (commonLength < prevWord.length() &&
-                commonLength < currWord.length() &&
-                prevWord[commonLength] == currWord[commonLength]) {
-                commonLength++;
-            }
-            commonPrefixLengths[i] = commonLength;
+        int x = 0;
+        vector<int> ans;
+        for (auto& i : words) {
+            x = 0;
+            solve(i, node, x);
+            ans.push_back(x);
         }
-        return commonPrefixLengths;
-    }
-
-    std::vector<int> calculateScores(const std::vector<std::string>& words, const std::vector<int>& sortedIndices, const std::vector<int>& commonPrefixLengths) 
-    {
-        std::vector<int> scores(words.size(), 0);
-        for (int i = 0; i < sortedIndices.size(); i++) 
-        {
-            int wordIndex = sortedIndices[i];
-            int wordLength = words[wordIndex].length();
-            scores[wordIndex] += wordLength;
-            int j = i + 1;
-            int commonLength = wordLength;
-            while (j < words.size()) 
-            {
-                commonLength = std::min(commonLength, commonPrefixLengths[j]);
-                if (commonLength == 0) 
-                {
-                    break;
-                }
-                scores[wordIndex] += commonLength;
-                scores[sortedIndices[j]] += commonLength;
-                j++;
-            }
-        }
-        return scores;
+        return ans;
     }
 };
-static const int KDS = []() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    std::cout.tie(nullptr);
-    return 0;
-    }();
-
-//KDS Appraoch 1
 
 int main()
 {
