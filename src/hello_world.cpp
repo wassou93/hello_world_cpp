@@ -4,48 +4,64 @@
 
 using namespace std;
 
-class trie {
-public:
-    int x;
-    trie* v[26];
-};
-void maketrie(string str, trie* node) {
-    for (auto& i : str) {
-        if (node->v[i - 'a'] == NULL) {
-            node->v[i - 'a'] = new trie();
-            node = node->v[i - 'a'];
-            node->x = node->x + 1;
-        }
-        else {
-            node = node->v[i - 'a'];
-            node->x = node->x + 1;
-        }
-    }
-}
-void solve(string str, trie* node, int& x) {
-    trie* p = node;
-    for (auto& i : str) {
-        p = p->v[i - 'a'];
-        x += p->x;
-    }
-}
 class Solution {
 public:
     vector<int> sumPrefixScores(vector<string>& words) {
-        trie* node = new trie();
-        for (auto& i : words) {
-            maketrie(i, node);
+        auto root = new TrieNode();
+
+        // Populate the TrieNode
+        for (const auto& word : words)
+        {
+            auto node = root;
+            for (char c : word)
+            {
+                if (node->children[c - 'a'] == NULL)
+                {
+                    node->children[c - 'a'] = new TrieNode();
+                }
+                node = node->children[c - 'a'];
+                node->score += 1;
+            }
         }
-        int x = 0;
-        vector<int> ans;
-        for (auto& i : words) {
-            x = 0;
-            solve(i, node, x);
-            ans.push_back(x);
+
+        // calculate scores
+        scores.reserve(words.size());
+        for (const auto& word : words)
+        {
+            auto node = root;
+            int score = 0;
+            for (char c : word)
+            {
+                node = node->children[c - 'a'];
+                score += node->score;
+            }
+            scores.push_back(score);
         }
-        return ans;
+
+        // return the vector of scores
+        return scores;
     }
+private:
+    vector<int> scores;
+    
+private:
+    
+
+    struct TrieNode
+    {
+        TrieNode* children[26];
+        int score = 0;
+    };
+
 };
+
+static const int KDS = []() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+    return 0;
+    }();
+
 
 int main()
 {
